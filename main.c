@@ -20,7 +20,7 @@ void State6();
 void State7();
 
 //Global Var for ISR/Interrupt
-uint8_t StateToggle = 0;
+volatile uint8_t StateToggle = 0;
 
 int main (void)
 {
@@ -111,9 +111,16 @@ ISR(PCINT0_vect)
         StateToggle = 0;
 }
 
-//Turn off and on
+//All On
 //
 void State0()
+{
+       PORTB = (1<<PB4)|(1<<PB3);
+}
+
+//Blink Slow
+//
+void State1()
 {
        PORTB = (1<<PB4)|(1<<PB3);
        _delay_ms(20);
@@ -121,18 +128,14 @@ void State0()
        _delay_ms(200);
 }
 
-//All On
-//
-void State1()
-{
-       PORTB = (1<<PB4)|(1<<PB3);
-}
-
-//
+//Blink Fast
 //
 void State2()
 {
        PORTB = (1<<PB4)|(1<<PB3);
+       _delay_ms(20);
+       PORTB = 0b00000000;
+       _delay_ms(50);
 }
 
 //
@@ -149,11 +152,14 @@ void State4()
        PORTB = (1<<PB4)|(1<<PB3);
 }
 
-//
+//Alternate Blink
 //
 void State5()
 {
-       PORTB = (1<<PB4)|(1<<PB3);
+    PORTB = 0b00010000;
+    _delay_ms(20);
+    PORTB = 0b00001000;
+    _delay_ms(20);
 }
 
 //Wink

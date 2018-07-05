@@ -9,25 +9,17 @@
 int main (void)
 {
   // set PB3 to be output
-	DDRB = 0b00001000;
+  //DDRB = 0b00001000;
+  //
+  DDRB=(1<<DDB3)|(1<<DDB4);
   while (1) {
-    
-    // flash# 1:
-    // set PB3 high
-    PORTB = 0b00001000; 
-    _delay_ms(20);
-    // set PB3 low
-    PORTB = 0b00000000;
-    _delay_ms(20);
 
-    // flash# 2:
-    // set PB3 high
-    PORTB = 0b00001000; 
-    _delay_ms(200);
-    // set PB3 low
+    PORTB = (1<<PB4)|(1<<PB3);
+    _delay_ms(20);
     PORTB = 0b00000000;
     _delay_ms(200);
+    //PORTB = (1>>PB4)|(1>>PB3);
   }
- 
+
   return 1;
 }

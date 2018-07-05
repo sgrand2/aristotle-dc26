@@ -40,7 +40,7 @@ int main (void)
 
   //Initialize Interrupts for Pin6/PB1
   initInterrupt();
-  
+
   while (1)
   {
     //Switch Between Different Routines
@@ -105,22 +105,24 @@ ISR(PCINT0_vect)
   {
     if(!buttonPressed)
     {
-    //StateToggle
-    int x = 0;
-    while(x < 5)
-    {
-      PORTB = (1<<PB4)|(1<<PB3);
-      _delay_ms(10);
-      PORTB = 0b00000000;
-      _delay_ms(10);
-      x++;
-    }
-    if(StateToggle < 8)
-      StateToggle++;
-    else
-      StateToggle = 0;
+      //Blink Lights Rapidly to Signal State Change
+      int sigChg = 0;
+      while(sigChg < 2)
+      {
+        PORTB = (1<<PB4)|(1<<PB3);
+        _delay_ms(5);
+        PORTB = 0b00000000;
+        _delay_ms(5);
+        sigChg++;
+      }
 
-    //EndToggle
+      //Increment Global State Change
+      if(StateToggle < 8)
+        StateToggle++;
+      else
+        StateToggle = 0;
+
+      //EndToggle
       PORTB = StateToggle | (1 << PB1);
       buttonPressed = 1;
     }

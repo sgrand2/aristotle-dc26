@@ -1,6 +1,7 @@
 // main.c
 // Aristotles Head Defcon26 using ATtiny85
 // LED @ PIN2 (PB3) and PIN3 (PB4)
+// Push Button Pin6/PB1
 
 //1Mhz clock speed
 //#define F_CPU 1000000UL
@@ -18,6 +19,9 @@ void State5();
 void State6();
 void State7();
 
+//Global Var for ISR/Interrupt
+uint8_t StateToggle = 0;
+
 int main (void)
 {
   //             Port Number
@@ -32,23 +36,9 @@ int main (void)
   //Initialize Interrupts for Pin6/PB1
   initInterrupt();
   
-  int StateToggle = 0;
-  int Toggle = PINB1;
-
-
   while (1)
   {
-    Toggle = PINB1;
     //Switch Between Different Routines
-
-    if(Toggle == 0)
-    { 
-      if(StateToggle < 8)
-        StateToggle++;
-      else
-        StateToggle = 0;
-    }
-
     //Push-Button States
     //0 - Fully On
     //1 - Blink Slow (200ms)
@@ -115,6 +105,10 @@ ISR(PCINT0_vect)
     _delay_ms(10);
     x++;
   }
+      if(StateToggle < 8)
+        StateToggle++;
+      else
+        StateToggle = 0;
 }
 
 //Turn off and on

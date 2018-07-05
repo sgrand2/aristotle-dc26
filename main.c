@@ -22,6 +22,10 @@ void State7();
 //Global Var for ISR/Interrupt
 volatile uint8_t StateToggle = 0;
 
+//Global Debounce
+uint8_t previousReading= 1;
+uint8_t buttonPressed = 1;
+
 int main (void)
 {
   //             Port Number
@@ -31,6 +35,7 @@ int main (void)
   //Set Pin 3 and Pin 4 as OutPuts
   //DDRB=0b00011000;
   DDRB=(1<<DDB3)|(1<<DDB4);
+  //Enable pullup on PB1
   PORTB |= (1 << PB1);
 
   //Initialize Interrupts for Pin6/PB1
@@ -96,19 +101,33 @@ static inline void initInterrupt(void)
 
 ISR(PCINT0_vect)
 {
-  int x = 0;
-  while(x < 5)
+  if ((PINB & (1 << PB1)) != previousReading)
   {
-    PORTB = (1<<PB4)|(1<<PB3);
-    _delay_ms(10);
-    PORTB = 0b00000000;
-    _delay_ms(10);
-    x++;
+    if(!buttonPressed)
+    {
+    //StateToggle
+    int x = 0;
+    while(x < 5)
+    {
+      PORTB = (1<<PB4)|(1<<PB3);
+      _delay_ms(10);
+      PORTB = 0b00000000;
+      _delay_ms(10);
+      x++;
+    }
+    if(StateToggle < 8)
+      StateToggle++;
+    else
+      StateToggle = 0;
+
+    //EndToggle
+      PORTB = StateToggle | (1 << PB1);
+      buttonPressed = 1;
+    }
+    else
+      buttonPressed = 0;
   }
-      if(StateToggle < 8)
-        StateToggle++;
-      else
-        StateToggle = 0;
+  previousReading = (PINB & (1 << PB1));
 }
 
 //All On

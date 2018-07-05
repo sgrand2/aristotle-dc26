@@ -2,11 +2,19 @@
 // Aristotles Head Defcon26 using ATtiny85
 // LED @ PIN2 (PB3) and PIN3 (PB4)
 
+//1Mhz clock speed
+//#define F_CPU 1000000UL
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
  
+static inline void initInterrupt(void);
 void State0();
 void State1();
+void State2();
+void State3();
+void State4();
+void State5();
 void State6();
 void State7();
 
@@ -17,9 +25,12 @@ int main (void)
   //PORTB = 0b00|0|0|0|0|0|0;
 
   //Set Pin 3 and Pin 4 as OutPuts
-  //DDRB=(1<<DDB3)|(1<<DDB4);
   //DDRB=0b00011000;
-  //
+  DDRB=(1<<DDB3)|(1<<DDB4);
+  PORTB |= (1 << PB1);
+
+  //Initialize Interrupts for Pin6/PB1
+  initInterrupt();
   
   int StateToggle = 0;
   int Toggle = PINB1;
@@ -27,8 +38,6 @@ int main (void)
 
   while (1)
   {
-    PORTB |= (1 << PB1);
-    DDRB=0b00011000;
     Toggle = PINB1;
     //Switch Between Different Routines
 
@@ -59,6 +68,24 @@ int main (void)
       case 1:
         State1();
         break;
+      case 2:
+        State2();
+        break;
+      case 3:
+        State3();
+        break;
+      case 4:
+        State4();
+        break;
+      case 5:
+        State5();
+        break;
+      case 6:
+        State6();
+        break;
+      case 7:
+        State7();
+        break;
       default:
         State7();
     }
@@ -69,9 +96,29 @@ int main (void)
 
   return 1;
 }
+static inline void initInterrupt(void)
+{
+  GIMSK |= (1 << PCIE); //Interrupt Enable on PIN Change
+  PCMSK |= (1 << PCINT1); //Enable Interrupt for PCINT1/Pin6/PB1
+  sei();
 
+}
+
+ISR(PCINT0_vect)
+{
+  int x = 0;
+  while(x < 5)
+  {
+    PORTB = (1<<PB4)|(1<<PB3);
+    _delay_ms(10);
+    PORTB = 0b00000000;
+    _delay_ms(10);
+    x++;
+  }
+}
 
 //Turn off and on
+//
 void State0()
 {
        PORTB = (1<<PB4)|(1<<PB3);
@@ -81,12 +128,42 @@ void State0()
 }
 
 //All On
+//
 void State1()
 {
        PORTB = (1<<PB4)|(1<<PB3);
 }
 
+//
+//
+void State2()
+{
+       PORTB = (1<<PB4)|(1<<PB3);
+}
+
+//
+//
+void State3()
+{
+       PORTB = (1<<PB4)|(1<<PB3);
+}
+
+//
+//
+void State4()
+{
+       PORTB = (1<<PB4)|(1<<PB3);
+}
+
+//
+//
+void State5()
+{
+       PORTB = (1<<PB4)|(1<<PB3);
+}
+
 //Wink
+//
 void State6()
 {
   int wink = 0;
@@ -103,6 +180,7 @@ void State6()
 }
 
 //All Off
+//
 void State7()
 {
        PORTB = 0b00000000;

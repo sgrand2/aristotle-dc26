@@ -159,14 +159,22 @@ void State2()
        _delay_ms(50);
 }
 
-//
+//PWM Blink
 //
 void State3()
 {
-       PORTB = (1<<PB4)|(1<<PB3);
+  //OCR1B = 0x2D;
+  //OCR1C = 0xFF;
+  //TCCR1 = 1 << CTC1; /*| //clear on match with OCR1C
+  //  9 << CS10;  //set prescaling to clk/256*/
+  //GTCCR = 1 << PWM1B | //enable PWM mode on OC1B
+  //  2 << COM1B0; //clear OC1B when we hit OCR1B
+
+  //_delay_ms(200);
+  PORTB = (1<<PB4)|(1<<PB3);
 }
 
-//
+//PWM Blink 2
 //
 void State4()
 {

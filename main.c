@@ -13,8 +13,6 @@ static inline void initInterrupt(void);
 void State0();
 void State1();
 void State2();
-void State3();
-void State4();
 void State5();
 void State6();
 void State7();
@@ -48,8 +46,6 @@ int main (void)
     //0 - Fully On
     //1 - Blink Slow (200ms)
     //2 - Blink Fast (20ms)
-    //3 - PWM (Slow Blink)
-    //4 - PWM (Quick Blink)
     //5 - Alternate Eyes
     //6 - Wink (Eye On/Eye Off)
     //7 - LEDS OFF
@@ -65,12 +61,6 @@ int main (void)
         break;
       case 2:
         State2();
-        break;
-      case 3:
-        State3();
-        break;
-      case 4:
-        State4();
         break;
       case 5:
         State5();
@@ -159,27 +149,7 @@ void State2()
        _delay_ms(50);
 }
 
-//PWM Blink
-//
-void State3()
-{
-  //OCR1B = 0x2D;
-  //OCR1C = 0xFF;
-  //TCCR1 = 1 << CTC1; /*| //clear on match with OCR1C
-  //  9 << CS10;  //set prescaling to clk/256*/
-  //GTCCR = 1 << PWM1B | //enable PWM mode on OC1B
-  //  2 << COM1B0; //clear OC1B when we hit OCR1B
 
-  //_delay_ms(200);
-  PORTB = (1<<PB4)|(1<<PB3);
-}
-
-//PWM Blink 2
-//
-void State4()
-{
-       PORTB = (1<<PB4)|(1<<PB3);
-}
 
 //Alternate Blink
 //
